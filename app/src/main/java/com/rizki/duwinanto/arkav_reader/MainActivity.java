@@ -1,7 +1,9 @@
-package com.example.lenovo.arkav_reader;
+package com.rizki.duwinanto.arkav_reader;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -11,4 +13,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    public void goToScan(View view) {
+        Intent Scan = new Intent(this, ScanActivity.class);
+        startActivity(Scan);
+    }
 }

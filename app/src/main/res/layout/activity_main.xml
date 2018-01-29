@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/barcode_scanning"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.lenovo.arkav_reader.MainActivity">
-
+    android:paddingBottom="16dp"
+    android:paddingLeft="16dp"
+    android:paddingTop="16dp"
+    android:paddingRight="16dp"
+    tools:context="com.rizki.duwinanto.arkav_reader.MainActivity">
     <Button
-        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/kirim"
-        tools:layout_editor_absoluteX="161dp"
-        tools:layout_editor_absoluteY="413dp" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="202dp"
-        android:layout_height="114dp"
-        android:text="@string/test"
-        tools:layout_editor_absoluteX="78dp"
-        tools:layout_editor_absoluteY="174dp" />
-
-</android.support.constraint.ConstraintLayout>
+        android:text="@string/button_scan"
+        android:id="@+id/go_to_scan"
+        android:onClick="goToScan"
+        android:layout_marginStart="16dp"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_redeeem"
+        android:id="@+id/go_to_scan"
+        android:onClick="goToScan"
+        android:layout_marginEnd="16dp"/>
+</LinearLayout>

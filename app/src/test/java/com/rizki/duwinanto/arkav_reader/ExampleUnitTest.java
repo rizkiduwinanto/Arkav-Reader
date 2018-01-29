@@ -1,4 +1,4 @@
-package com.example.lenovo.arkav_reader;
+package com.rizki.duwinanto.arkav_reader;
 
 import org.junit.Test;
 

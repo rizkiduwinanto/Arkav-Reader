@@ -2,4 +2,6 @@
     <string name="app_name">Arkav-Reader</string>
     <string name="kirim">Kirim</string>
     <string name="test">Test!</string>
+    <string name="button_scan">Scan</string>
+    <string name="button_redeeem">Redeeem</string>
 </resources>

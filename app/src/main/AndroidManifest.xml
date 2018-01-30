@@ -12,12 +12,8 @@
         <activity android:name="com.rizki.duwinanto.arkav_reader.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.rizki.duwinanto.arkav_reader.RedeemActivity" />
-        <activity android:name="com.rizki.duwinanto.arkav_reader.ScanActivity"
-            android:parentActivityName=".MainActivity"></activity>
     </application>
 </manifest>

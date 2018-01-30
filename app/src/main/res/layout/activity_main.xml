@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/barcode_scanning"
     android:layout_width="match_parent"
@@ -9,19 +8,7 @@
     android:paddingLeft="16dp"
     android:paddingTop="16dp"
     android:paddingRight="16dp"
+    android:gravity="center"
+    android:orientation="horizontal">
     tools:context="com.rizki.duwinanto.arkav_reader.MainActivity">
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_scan"
-        android:id="@+id/go_to_scan"
-        android:onClick="goToScan"
-        android:layout_marginStart="16dp"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_redeeem"
-        android:id="@+id/go_to_scan"
-        android:onClick="goToScan"
-        android:layout_marginEnd="16dp"/>
 </LinearLayout>

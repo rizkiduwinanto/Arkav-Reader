@@ -3,12 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/barcode_scanning"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="16dp"
-    android:paddingLeft="16dp"
-    android:paddingTop="16dp"
-    android:paddingRight="16dp"
-    android:gravity="center"
-    android:orientation="horizontal">
+    android:layout_height="match_parent">
     tools:context="com.rizki.duwinanto.arkav_reader.MainActivity">
 </LinearLayout>

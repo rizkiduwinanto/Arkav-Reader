@@ -1,8 +1,6 @@
 package com.rizki.duwinanto.arkav_reader;
 
-import android.app.Activity;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Build;
@@ -12,19 +10,21 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.zxing.Result;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 import static android.Manifest.permission.CAMERA;
 
-public class MainActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler{
+public class ScanActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler{
     private ZXingScannerView mScannerView;
     private static final int REQUEST_CAMERA = 1;
     private static int cameraID = Camera.CameraInfo.CAMERA_FACING_BACK;
+    private DatabaseReference databaseStartupVisit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                 requestPermission();
             }
         //}
+        databaseStartupVisit = FirebaseDatabase.getInstance().getReference("StartupVisit");
     }
 
     private boolean checkPermission(){
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     }
 
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener){
-        new android.support.v7.app.AlertDialog.Builder(MainActivity.this)
+        new android.support.v7.app.AlertDialog.Builder(ScanActivity.this)
                 .setMessage(message)
                 .setPositiveButton("OK", okListener)
                 .setNegativeButton("Cancel", null)
@@ -110,12 +111,13 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         final String mResult = rawResult.getText();
         Log.d("Arkav-QR", rawResult.getText());
         Log.d("Arkav-QR", rawResult.getBarcodeFormat().toString());
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Scan Result");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mScannerView.resumeCameraPreview(MainActivity.this);
+                mScannerView.resumeCameraPreview(ScanActivity.this);
             }
         });
         builder.setMessage(rawResult.getText());

@@ -85,11 +85,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        progressDialog.dismiss();
                         if (task.isSuccessful()){
                             finish();
                             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Pass or Email Wrong", Toast.LENGTH_LONG).show();
                         }
+                        progressDialog.dismiss();
                     }
                 });
     }

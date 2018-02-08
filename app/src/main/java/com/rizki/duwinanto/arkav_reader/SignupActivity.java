@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class SignupActivity extends AppCompatActivity implements View.OnClickListener {
@@ -96,6 +97,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                         if (task.isSuccessful()){
                             Log.w("SignUp", "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder().setDisplayName(spinnerName.getSelectedItem().toString()).build();
+                            user.updateProfile(profileUpdate);
                             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                         } else {
                             Log.w("SignUp", "createUserWithEmail:failed");
@@ -105,8 +108,4 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                     }
                 });
     }
-
-//    private void createNewUser(User userRegistration){
-//        String username = "username";
-//    }
 }

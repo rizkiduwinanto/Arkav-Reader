@@ -1,6 +1,7 @@
 package com.rizki.duwinanto.arkav_reader;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Build;
@@ -12,9 +13,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.zxing.Result;
+
+import java.sql.Date;
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
@@ -25,6 +33,7 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
     private static final int REQUEST_CAMERA = 1;
     private static int cameraID = Camera.CameraInfo.CAMERA_FACING_BACK;
     private DatabaseReference databaseStartupVisit;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +48,8 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
             }
         //}
         databaseStartupVisit = FirebaseDatabase.getInstance().getReference("StartupVisit");
+
+        mAuth = FirebaseAuth.getInstance();
     }
 
     private boolean checkPermission(){
@@ -101,7 +112,7 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
         new android.support.v7.app.AlertDialog.Builder(ScanActivity.this)
                 .setMessage(message)
                 .setPositiveButton("OK", okListener)
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton("Back", okListener)
                 .create()
                 .show();
     }
@@ -112,6 +123,9 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
         Log.d("Arkav-QR", rawResult.getText());
         Log.d("Arkav-QR", rawResult.getBarcodeFormat().toString());
 
+
+        addQRCode(mResult);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Scan Result");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -120,8 +134,21 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
                 mScannerView.resumeCameraPreview(ScanActivity.this);
             }
         });
+        builder.setNeutralButton("Back", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+            }
+        });
         builder.setMessage(rawResult.getText());
         AlertDialog alertQR = builder.create();
         alertQR.show();
+    }
+
+    public void addQRCode(String result){
+        String startupName = mAuth.getCurrentUser().getDisplayName();
+        Log.d("ScanActivity", "Add QR Code");
+        databaseStartupVisit.child(result).setValue(startupName);
     }
 }

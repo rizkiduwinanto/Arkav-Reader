@@ -6,11 +6,7 @@
     <string name="button_redeeem">Redeeem</string>
     <string name="title_activity_login">login</string>
     <string name="button_signout">Sign Out</string>
-    <string-array name="startupArray">
-        <item>Mandala</item>
-        <item>Divusi</item>
-        <item>Atom</item>
-        <item>Test</item>
-        <item>Startup-Rizki</item>
-    </string-array>
+    <string name="drawer_open">Menu</string>
+    <string name="drawer_close">Close</string>
+    <string name="action_settings">Menu</string>
 </resources>

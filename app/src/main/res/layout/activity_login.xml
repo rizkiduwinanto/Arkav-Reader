@@ -33,7 +33,9 @@
            android:id="@+id/buttonLogin"
            android:text="Log In"
            android:layout_width="match_parent"
-           android:layout_height="wrap_content" />
+           android:layout_height="wrap_content"
+           android:background="@color/color_secondary"
+           android:textColor="#FFFFFF"/>
        <TextView
            android:textAlignment="center"
            android:text="Don't have an Account"

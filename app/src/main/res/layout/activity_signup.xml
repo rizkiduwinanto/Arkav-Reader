@@ -38,7 +38,9 @@
             android:id="@+id/buttonSignup"
             android:text="Sign up"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="@color/color_secondary"
+            android:textColor="#FFFFFF"/>
         <TextView
             android:textAlignment="center"
             android:text="Already registered"

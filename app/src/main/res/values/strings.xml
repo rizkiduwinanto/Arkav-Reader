@@ -9,4 +9,5 @@
     <string name="drawer_open">Menu</string>
     <string name="drawer_close">Close</string>
     <string name="action_settings">Menu</string>
+    <string name="entry_without_qr_code">Entry Without Scanner</string>
 </resources>

@@ -1,14 +1,19 @@
 package com.rizki.duwinanto.arkav_reader;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -130,6 +135,7 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
             mScannerView.resumeCameraPreview(ScanActivity.this);
         } else {
             Toast.makeText(getApplicationContext(), "This is not Arkavidia QR!!!", Toast.LENGTH_LONG).show();
+            mScannerView.resumeCameraPreview(ScanActivity.this);
         }
     }
 
@@ -141,21 +147,47 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
         entryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.child(result).exists()) {
-                    ArrayList<String> startup = new ArrayList<>();
-                    startup.add(startupName);
-                    entryRef.child(result).setValue(new Entry(result, 1, startup));
-                } else {
-                    Entry entry = dataSnapshot.child(result).getValue(Entry.class);
-                    ArrayList<String> startup = entry.getStartup();
-                    if (!startup.contains(startupName)) {
+                try {
+                    if (!dataSnapshot.child(result).exists()) {
+                        ArrayList<String> startup = new ArrayList<>();
                         startup.add(startupName);
-                        entry.setStartup(startup);
-                        Integer count = entry.getCount();
-                        count++;
-                        entry.setCount(count);
-                        entryRef.child(result).setValue(entry);
+                        entryRef.child(result).setValue(new Entry(result, 1, startup,false));
+                    } else {
+                        Entry entry = dataSnapshot.child(result).getValue(Entry.class);
+                        ArrayList<String> startup = entry.getStartup();
+                        if (startup != null) {
+                            if (!startup.contains(startupName)) {
+                                startup.add(startupName);
+                                entry.setStartup(startup);
+                                Integer count = entry.getCount();
+                                count++;
+                                entry.setCount(count);
+                                entryRef.child(result).setValue(entry);
+                            }
+                        } else {
+                            startup = new ArrayList<String>();
+                            startup.add(startupName);
+                            Integer count = 1;
+                            entry.setStartup(startup);
+                            entry.setCount(count);
+                            entryRef.child(result).setValue(entry);
+                        }
                     }
+                } catch (NullPointerException e){
+                    Toast.makeText(getApplicationContext(), "Sorry Unstable Connection with "+result, Toast.LENGTH_SHORT).show();
+                    if (dataSnapshot.child(result).exists()){
+                        Entry entry = dataSnapshot.child(result).getValue(Entry.class);
+                        ArrayList<String> startup = entry.getStartup();
+                        if (startup != null){
+                            Integer count = entry.getCount();
+                            count = entry.getStartup().size();
+                            entry.setCount(count);
+                            entryRef.child(result).setValue(entry);
+                        } else {
+                            entryRef.child(result).removeValue();
+                        }
+                    }
+
                 }
             }
 
@@ -168,22 +200,25 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
         startupRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Integer countStartup = 0;
-                if (!dataSnapshot.child(startupName).exists()) {
-                    ArrayList<String> entry = new ArrayList<>();
-                    entry.add(result);
-                    startupRef.child(startupName).setValue(new Startup(startupName, 1, entry, getZone()));
-                } else {
-                    Startup startup = dataSnapshot.child(startupName).getValue(Startup.class);
-                    ArrayList<String> entry = startup.getEntry();
-                    if (!entry.contains(result)) {
+                try {
+                    Integer countStartup = 0;
+                    if (!dataSnapshot.child(startupName).exists()) {
+                        ArrayList<String> entry = new ArrayList<>();
                         entry.add(result);
-                        startup.setEntry(entry);
-                        countStartup = startup.getCount();
-                        countStartup++;
-                        startup.setCount(countStartup);
-                        startupRef.child(startupName).setValue(startup);
+                        startupRef.child(startupName).setValue(new Startup(startupName, 1, entry, getZone()));
+                    } else {
+                        Startup startup = dataSnapshot.child(startupName).getValue(Startup.class);
+                        ArrayList<String> entry = startup.getEntry();
+                        if (!entry.contains(result)) {
+                            entry.add(result);
+                            startup.setEntry(entry);
+                            countStartup = entry.size();
+                            startup.setCount(countStartup);
+                            startupRef.child(startupName).setValue(startup);
+                        }
                     }
+                } catch (NullPointerException e){
+                    Toast.makeText(getApplicationContext(), "Sorry Unstable Connection with "+result, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -234,6 +269,54 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
         map.put("Telkomsel", 8);
         map.put("Agate", 9);
         return map.get(startupName);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_scan, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        if (item.getItemId() == R.id.exit_scanner){
+            finish();
+            startActivity(new Intent(this, HomeActivity.class));
+        } else if (item.getItemId() == R.id.status_scanner) {
+            final DatabaseReference ref = databaseStartupEntry.child("startup");
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(!dataSnapshot.child(startupName).exists()){
+                        Toast.makeText(getApplicationContext(),"You haven't scanned anything!", Toast.LENGTH_LONG).show();
+                    } else {
+                        Startup startup = dataSnapshot.child(startupName).getValue(Startup.class);
+                        Integer count = startup.getCount();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ScanActivity.this);
+                        builder.setTitle("Status "+ startupName);
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mScannerView.resumeCameraPreview(ScanActivity.this);
+                            }
+                        });
+                        builder.setMessage(startupName + " has scanned " + count + " people.");
+                        AlertDialog alert1 = builder.create();
+                        alert1.show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        } else {
+            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+            startActivity(intent);
+        }
+        return true;
     }
 
 }
